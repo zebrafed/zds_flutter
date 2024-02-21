@@ -198,7 +198,7 @@ class _ChatTagsPill extends StatelessWidget {
 
     return Semantics(
       label:
-          '${tags.length}${tags.length > 1 ? ComponentStrings.of(context).get('TAGS', 'tags') : ComponentStrings.of(context).get('QCHAT_TAG', 'tag')}.',
+          '${tags.length}${tags.length > 1 ? ComponentStrings.of(context).get('TAGS', 'tags') : ComponentStrings.of(context).get('TAG', 'tag')}.',
       button: true,
       onTapHint: ComponentStrings.of(context).get('MODIFY_TAGS', 'Modify tags'),
       focusable: true,
