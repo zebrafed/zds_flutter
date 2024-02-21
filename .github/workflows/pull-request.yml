@@ -1,9 +1,6 @@
 name: CI - Pull Request
 on:
-  push: #TODO: Remove this
-  pull_request_target:
-    types:
-      - opened
+  pull_request:
 
 jobs:
   up-to-date:
@@ -17,6 +14,8 @@ jobs:
           ref: ${{ github.head_ref }}
       - name: Check branch is up to date
         run: |
+          echo ${{ github.event.pull_request.base.sha}}
+          echo ${{ github.event.pull_request.head.sha}}
           if git merge-base --is-ancestor ${{ github.event.pull_request.base.sha}} ${{ github.event.pull_request.head.sha}}
           then
             echo "Your branch is up to date."
@@ -70,7 +69,7 @@ jobs:
         run: |
           dart format . -l 120
           dart fix --apply
-          dart analyze
+          flutter analyze
       - name: Check for modified files
         id: git-check
         run: echo "modified=$(if [ -n "$(git status --porcelain)" ]; then echo "true"; else echo "false"; fi)" >>  $GITHUB_ENV
@@ -103,5 +102,5 @@ jobs:
           repoToken: "${{ secrets.GITHUB_TOKEN }}"
           firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_ZDS_FLUTTER }}"
           expires: 7d
-          projectId: zds-flutter
+          projectId: zds-c9c24
           channelId: "pr-${{ github.event.number }}-${{ github.event.pull_request.head.ref }}"
