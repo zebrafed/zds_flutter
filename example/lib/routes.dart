@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zds_flutter_example/pages/components/chat.dart';
 import 'package:zds_flutter_example/pages/theme/colors.dart';
 import 'package:zds_flutter_example/pages/theme/text.dart';
 
@@ -231,19 +232,16 @@ final kRoutes = {
     const DemoRoute(wrapper: false, title: 'Split Navigation', child: SplitNavigatorDemo()),
     const DemoRoute(wrapper: false, title: 'Quill Editor', child: QuillEditorDemo()),
     const DemoRoute(title: 'Html Preview', wrapper: false, child: HtmlPreview()),
-  ],
-  'Animations': [
-    const DemoRoute(title: 'Colors generator', child: ColorUtilsDemo()),
+    const DemoRoute(title: 'Chat', child: ChatDemo()),
   ],
   'Assets': [
     const DemoRoute(title: 'Animations', child: AnimationsDemo()),
     const DemoRoute(title: 'Images', child: ImagesDemo()),
     const DemoRoute(title: 'Icons', child: IconsDemo())
   ],
-  'Colors': [
+  'Theme': [
     const DemoRoute(title: 'Colors', child: ColorsDemo()),
-  ],
-  'Typography': [
+    const DemoRoute(title: 'Colors generator', child: ColorUtilsDemo()),
     const DemoRoute(title: 'Typography', child: TextDemo()),
   ],
 };
