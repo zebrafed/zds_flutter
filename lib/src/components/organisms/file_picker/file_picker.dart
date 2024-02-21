@@ -248,7 +248,7 @@ class ZdsFilePicker extends StatefulWidget {
 
   /// List of processes a file should undergo post getting picked from file picker
   ///
-  /// Defaults to [zds DefaultPostProcessors]
+  /// Defaults to [zdsDefaultPostProcessors]
   final List<ZdsFilePostProcessor>? postProcessors;
 
   /// Validations that are needed to be performed on a file
@@ -258,7 +258,7 @@ class ZdsFilePicker extends StatefulWidget {
 
   /// A function called whenever any exception is thrown in selection process
   ///
-  /// Defaults to [zds FileError]
+  /// Defaults to [zdsFileError]
   final void Function(BuildContext context, FilePickerConfig config, Exception exception)? onError;
 
   @override
@@ -333,7 +333,9 @@ class ZdsFilePickerState extends State<ZdsFilePicker> with AutomaticKeepAliveCli
     final int maxFiles = config.maxFilesAllowed;
     final bool busy = _busy || controller.busy;
     final List<FileWrapper> attachmentList = controller.items.where((FileWrapper element) => !element.isLink).toList();
-    final bool disableWidget = _busy || controller.busy || (maxFiles != 0 && maxFiles <= attachmentList.length);
+    final bool disableWidget = _busy ||
+        controller.busy ||
+        (maxFiles != 0 && maxFiles <= (attachmentList.length + controller.remoteItems.length));
     final AnimatedSize content = AnimatedSize(
       duration: const Duration(milliseconds: 250),
       child: Stack(
@@ -680,8 +682,9 @@ extension _Methods on ZdsFilePickerState {
 
       if (result != null && mounted) {
         for (final PlatformFile file in result.files) {
-          if (maxFilesAllowed != 0 &&
-              controller.items.where((FileWrapper element) => !element.isLink).toList().length >= maxFilesAllowed) {
+          final itemsLength = controller.items.where((FileWrapper element) => !element.isLink).toList().length +
+              controller.remoteItems.length;
+          if (maxFilesAllowed != 0 && itemsLength >= maxFilesAllowed) {
             break;
           }
           if (kIsWeb) {
@@ -723,7 +726,7 @@ extension _Methods on ZdsFilePickerState {
       if (exception != null && mounted) {
         widget.onError?.call(context, config, exception);
       } else {
-        controller.addFiles(<FileWrapper>[input]);
+        if (input.content != null) controller.addFiles(<FileWrapper>[input]);
       }
     } on Exception catch (e) {
       if (mounted) widget.onError?.call(context, config, e);
@@ -781,7 +784,7 @@ extension on ZdsFilePickerState {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: style?.copyWith(color: zetaColors.textSubtle),
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor > 2.7 ? 2.7 : null,
+                  textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 2.7),
                 ),
               ],
             ],

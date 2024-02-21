@@ -329,6 +329,7 @@ class ZdsDateTimePickerState extends State<ZdsDateTimePicker> {
   }
 
   Future<DateTime?> _showDatePicker(BuildContext context, DateTime? currentValue) {
+    final componentString = ComponentStrings.of(context);
     return showZdsFiscalDatePicker(
       format: widget.format,
       context: context,
@@ -336,7 +337,7 @@ class ZdsDateTimePickerState extends State<ZdsDateTimePicker> {
           (widget.minDate != null && DateTime.now().isBefore(widget.minDate!) ? widget.minDate! : DateTime.now()),
       firstDate: widget.minDate ?? DateTime(1900),
       lastDate: widget.maxDate ?? DateTime(2100),
-      titleText: widget.helpText ?? 'Select Date',
+      titleText: widget.helpText ?? componentString.get('SELECT_DATE', 'Select Date'),
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).zdsDateTimePickerTheme.copyWith(
@@ -345,8 +346,8 @@ class ZdsDateTimePickerState extends State<ZdsDateTimePicker> {
           child: child!,
         );
       },
-      cancelText: widget.cancelClickText ?? ComponentStrings.of(context).get('CANCEL', 'Cancel'),
-      okText: widget.okClickText ?? ComponentStrings.of(context).get('OK', 'OK'),
+      cancelText: widget.cancelClickText ?? componentString.get('CANCEL', 'Cancel'),
+      okText: widget.okClickText ?? componentString.get('OK', 'OK'),
       startDayOfWeek: widget.startDayOfWeek ?? 1,
     );
   }

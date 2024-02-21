@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as path;
+
 import '../../../zds_flutter.dart';
 
 /// Identifiers for the supported Zebra icons.
@@ -366,12 +367,12 @@ Color iconColor(String ext) {
     case '.rtf':
     case '.ttf':
     case '.txt':
-      return LightHexColor.fromHex('#376FC9');
+      return '#376FC9'.colorFromHex();
 
     case '.pdf':
     case '.ppt':
     case '.pptx':
-      return LightHexColor.fromHex('#DB0D00');
+      return '#DB0D00'.colorFromHex();
 
     case '.gif':
     case '.ico':
@@ -381,7 +382,7 @@ Color iconColor(String ext) {
     case '.tif':
     case '.tiff':
     case '.bmp':
-      return LightHexColor.fromHex('#F56200');
+      return '#F56200'.colorFromHex();
 
     case '.flv':
     case '.m4v':
@@ -389,7 +390,7 @@ Color iconColor(String ext) {
     case '.mpeg':
     case '.mpg':
     case '.qt':
-      return LightHexColor.fromHex('#6F00C6');
+      return '#6F00C6'.colorFromHex();
 
     case '.au':
     case '.avi':
@@ -397,26 +398,25 @@ Color iconColor(String ext) {
     case '.mp3':
     case '.mp4':
     case '.wav':
-      return LightHexColor.fromHex('#70A300');
+      return '#70A300'.colorFromHex();
 
     case '.csv':
     case '.xml':
     case '.xls':
     case '.xlsx':
-      return LightHexColor.fromHex('#1F802E');
+      return '#1F802E'.colorFromHex();
 
     case '.htm':
     case '.rar':
     case '.url':
     case '.zip':
-      return LightHexColor.fromHex('#888888');
+      return '#888888'.colorFromHex();
 
     default:
-      return LightHexColor.fromHex('#888888');
+      return '#888888'.colorFromHex();
   }
 }
 
-/// Extensions to get an icon from a file type.
 extension IconDataFromExt on String {
   /// Assuming the string is a file name, this function returns the corresponding icon for the filetype.
   ///
@@ -436,7 +436,6 @@ extension IconDataFromExt on String {
     return _resolveFileIcon(this);
   }
 
-  /// Returns file type icon with color. See [IconDataFromExt.fileIcon].
   Icon coloredFileIcon() {
     return Icon(_resolveFileIcon(this), color: _resolveFileColor(this));
   }
