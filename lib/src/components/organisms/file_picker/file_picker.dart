@@ -183,8 +183,6 @@ enum ZdsOptionDisplay {
 /// If [showSelected] is true, the attachments will be shown. There are two ways to display attachments, either
 /// vertically or horizontally
 ///
-/// {@image <image alt='' src='../../../assets/documentation/filepicker.png'>}
-///
 /// See also:
 ///
 ///  * [FilePickerConfig], the configuration for this filepicker.
@@ -585,9 +583,9 @@ extension _Methods on ZdsFilePickerState {
     try {
       if (gif == null) return;
       _busy = true;
-      if (mounted) await onPicked(context, FileWrapper(FilePickerOptions.GIF, gif), FilePickerOptions.GIF);
+      if (context.mounted) await onPicked(context, FileWrapper(FilePickerOptions.GIF, gif), FilePickerOptions.GIF);
     } on Exception catch (e) {
-      if (mounted) widget.onError?.call(context, config, e);
+      if (context.mounted) widget.onError?.call(context, config, e);
     } finally {
       _busy = false;
     }
@@ -597,12 +595,12 @@ extension _Methods on ZdsFilePickerState {
     try {
       final ImagePicker picker = ImagePicker();
       final XFile? photo = await picker.pickImage(source: ImageSource.camera);
-      if (photo != null && mounted) {
+      if (photo != null && context.mounted) {
         final FileWrapper file = FileWrapper(FilePickerOptions.CAMERA, photo);
         await onPicked(context, file, FilePickerOptions.CAMERA);
       }
     } on Exception catch (e) {
-      if (mounted) widget.onError?.call(context, config, e);
+      if (context.mounted) widget.onError?.call(context, config, e);
     } finally {
       _busy = false;
     }
@@ -613,12 +611,12 @@ extension _Methods on ZdsFilePickerState {
       final ImagePicker picker = ImagePicker();
       final XFile? video = await picker.pickVideo(source: ImageSource.camera);
 
-      if (video != null && mounted) {
+      if (video != null && context.mounted) {
         final FileWrapper file = FileWrapper(FilePickerOptions.VIDEO, video);
         await onPicked(context, file, FilePickerOptions.VIDEO);
       }
     } on Exception catch (e) {
-      if (mounted) widget.onError?.call(context, config, e);
+      if (context.mounted) widget.onError?.call(context, config, e);
     } finally {
       _busy = false;
     }
@@ -680,7 +678,7 @@ extension _Methods on ZdsFilePickerState {
               allowMultiple: allowMultiple,
             );
 
-      if (result != null && mounted) {
+      if (result != null && context.mounted) {
         for (final PlatformFile file in result.files) {
           final itemsLength = controller.items.where((FileWrapper element) => !element.isLink).toList().length +
               controller.remoteItems.length;
@@ -699,7 +697,7 @@ extension _Methods on ZdsFilePickerState {
         }
       }
     } on Exception catch (e) {
-      if (mounted) widget.onError?.call(context, config, e);
+      if (context.mounted) widget.onError?.call(context, config, e);
     } finally {
       _busy = false;
     }
@@ -723,13 +721,13 @@ extension _Methods on ZdsFilePickerState {
         }
       }
 
-      if (exception != null && mounted) {
+      if (exception != null && context.mounted) {
         widget.onError?.call(context, config, exception);
       } else {
         if (input.content != null) controller.addFiles(<FileWrapper>[input]);
       }
     } on Exception catch (e) {
-      if (mounted) widget.onError?.call(context, config, e);
+      if (context.mounted) widget.onError?.call(context, config, e);
     } finally {
       _busy = false;
     }
