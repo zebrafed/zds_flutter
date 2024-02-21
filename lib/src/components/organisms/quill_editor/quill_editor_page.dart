@@ -4,9 +4,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
+import 'package:flutter_quill/quill_delta.dart';
 
 import '../../../../zds_flutter.dart';
 import 'quill_toolbar.dart';
+
+/// Default options for ZDS Quill Toolbar
+final zdsQuillToolbarOptions = QuillToolbarOption.values.toSet()
+  ..remove(QuillToolbarOption.fontFamily)
+  ..remove(QuillToolbarOption.fontSize);
 
 /// Represents a Quill editor page.
 class ZdsQuillEditorPage extends StatefulWidget {
@@ -19,7 +25,7 @@ class ZdsQuillEditorPage extends StatefulWidget {
     required this.readOnly,
     required this.showClearFormatAsFloating,
     this.quillToolbarPosition,
-    this.toolbarIconSize = 24,
+    this.toolbarIconSize = kDefaultIconSize,
     this.langCode,
     this.charLimit = 10000,
     this.placeholder = '',
@@ -69,7 +75,7 @@ class ZdsQuillEditorPage extends StatefulWidget {
     int charLimit = 10000,
     bool readOnly = false,
     ZdsQuillDelta? initialDelta,
-    double toolbarIconSize = 24,
+    double toolbarIconSize = kDefaultIconSize,
     bool fullscreenDialog = true,
     bool showClearFormatAsFloating = true,
     Set<QuillToolbarOption>? toolbarOptions,
@@ -87,7 +93,7 @@ class ZdsQuillEditorPage extends StatefulWidget {
             toolbarIconSize: toolbarIconSize,
             quillToolbarPosition: quillToolbarPosition,
             showClearFormatAsFloating: showClearFormatAsFloating,
-            toolbarOptions: toolbarOptions ?? QuillToolbarOption.values.toSet(),
+            toolbarOptions: toolbarOptions ?? zdsQuillToolbarOptions,
             langCode: langCode ?? ComponentStrings.of(context).locale.toString(),
             initialDelta: initialDelta?.copyWith(document: initialDelta.document),
           );
@@ -98,6 +104,7 @@ class ZdsQuillEditorPage extends StatefulWidget {
 
   @override
   State<ZdsQuillEditorPage> createState() => _ZdsQuillEditorState();
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
@@ -286,7 +293,7 @@ class _ZdsQuillEditorState extends State<ZdsQuillEditorPage> with FrameCallbackM
 
   /// Sets the editor's content from a plain text source.
   Future<void> _setText(String initialText) async {
-    await initialText.toDelta().then((quill.Delta delta) {
+    await initialText.toDelta().then((Delta delta) {
       _quillController.document = quill.Document.fromDelta(delta);
     });
   }
@@ -337,20 +344,25 @@ class _ZdsQuillEditorState extends State<ZdsQuillEditorPage> with FrameCallbackM
             onPressed: null,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(30),
-              child: quill.ClearFormatButton(
-                icon: Icons.format_clear,
-                iconSize: 30,
-                controller: _quillController,
-                iconTheme: quill.QuillIconTheme(
-                  iconSelectedColor: Theme.of(context).colorScheme.onSecondary,
-                  iconUnselectedFillColor: Colors.transparent,
-                ),
+              child: IconButton(
+                icon: const Icon(Icons.format_clear),
+                onPressed: _clearFormatting,
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void _clearFormatting() {
+    final Set<quill.Attribute<dynamic>> attributes = {};
+    for (final style in _quillController.getAllSelectionStyles()) {
+      style.attributes.values.forEach(attributes.add);
+    }
+    for (final attribute in attributes) {
+      _quillController.formatSelection(quill.Attribute.clone(attribute, null));
+    }
   }
 
   Widget _buildEditorWidget() {
@@ -371,7 +383,10 @@ class _ZdsQuillEditorState extends State<ZdsQuillEditorPage> with FrameCallbackM
       toolbarColor: Theme.of(context).colorScheme.surface,
       toolbarOptions: <QuillToolbarOption>{...widget.toolbarOptions}
         ..remove(QuillToolbarOption.redo)
-        ..remove(QuillToolbarOption.undo),
+        ..remove(QuillToolbarOption.undo)
+        ..remove(QuillToolbarOption.fontFamily)
+        ..remove(QuillToolbarOption.fontSize)
+        ..remove(QuillToolbarOption.clearFormat),
     );
   }
 
@@ -384,7 +399,7 @@ class _ZdsQuillEditorState extends State<ZdsQuillEditorPage> with FrameCallbackM
         if (widget.toolbarOptions.contains(QuillToolbarOption.undo))
           _HistoryButton(
             icon: Icons.undo_outlined,
-            iconSize: widget.toolbarIconSize,
+            iconSize: 24,
             controller: _quillController,
             enabledColor: appBarFg,
             disabledColor: appBarFg.withOpacity(0.3),
@@ -394,7 +409,7 @@ class _ZdsQuillEditorState extends State<ZdsQuillEditorPage> with FrameCallbackM
         if (widget.toolbarOptions.contains(QuillToolbarOption.redo))
           _HistoryButton(
             icon: Icons.redo_outlined,
-            iconSize: widget.toolbarIconSize,
+            iconSize: 24,
             controller: _quillController,
             enabledColor: appBarFg,
             disabledColor: appBarFg.withOpacity(0.3),
@@ -513,6 +528,7 @@ class _HistoryButton extends StatefulWidget {
 
   @override
   _HistoryButtonState createState() => _HistoryButtonState();
+
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
@@ -538,12 +554,10 @@ class _HistoryButtonState extends State<_HistoryButton> {
       _setIconColor();
     });
 
-    return quill.QuillIconButton(
-      highlightElevation: 0,
-      hoverElevation: 0,
-      size: widget.iconSize * kIconButtonFactor,
+    return quill.QuillToolbarIconButton(
+      isSelected: false,
+      iconTheme: const quill.QuillIconTheme(),
       icon: Icon(widget.icon, size: widget.iconSize, color: _iconColor),
-      fillColor: Colors.transparent,
       onPressed: _changeHistory,
       afterPressed: widget.afterPressed,
     );
