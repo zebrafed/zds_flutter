@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mime/mime.dart';
 import 'package:validators/validators.dart';
 
 import '../../../../zds_flutter.dart';
@@ -72,6 +75,122 @@ class ZdsMessage {
   })  : attachment = null,
         isInfo = false,
         attachmentType = null;
+
+  /// Constructs a message with an image attachment as a base64 image.
+  const ZdsMessage.imageBase64({
+    required this.status,
+    required this.time,
+    required String image,
+    String? text,
+    this.senderName = '',
+    this.isDeleted = false,
+    this.reacts = const {},
+    this.senderColor,
+    this.tags = const [],
+    this.isForwarded = false,
+    this.replyMessageInfo,
+    this.id = '',
+  })  : content = text,
+        attachment = image,
+        isInfo = false,
+        attachmentType = AttachmentType.imageBase64;
+
+  /// Constructs a message with an image attachment with a local file path.
+  const ZdsMessage.imageLocal({
+    required this.status,
+    required this.time,
+    required String filePath,
+    String? text,
+    this.senderName = '',
+    this.isDeleted = false,
+    this.reacts = const {},
+    this.senderColor,
+    this.tags = const [],
+    this.isForwarded = false,
+    this.replyMessageInfo,
+    this.id = '',
+  })  : content = text,
+        attachment = filePath,
+        isInfo = false,
+        attachmentType = AttachmentType.imageNetwork;
+
+  /// Constructs a message with an image attachment with a network url.
+  const ZdsMessage.imageNetwork({
+    required this.status,
+    required this.time,
+    required String url,
+    String? text,
+    this.senderName = '',
+    this.isDeleted = false,
+    this.reacts = const {},
+    this.senderColor,
+    this.tags = const [],
+    this.isForwarded = false,
+    this.replyMessageInfo,
+    this.id = '',
+  })  : content = text,
+        attachment = url,
+        isInfo = false,
+        attachmentType = AttachmentType.imageNetwork;
+
+  /// Constructs a message with a video attachment with a network url.
+  const ZdsMessage.videoNetwork({
+    required this.status,
+    required this.time,
+    required String url,
+    String? text,
+    this.senderName = '',
+    this.isDeleted = false,
+    this.reacts = const {},
+    this.senderColor,
+    this.tags = const [],
+    this.isForwarded = false,
+    this.replyMessageInfo,
+    this.id = '',
+  })  : content = text,
+        attachment = url,
+        isInfo = false,
+        attachmentType = AttachmentType.videoNetwork;
+
+  /// Constructs a message with a video attachment with a local file path.
+  const ZdsMessage.videoLocal({
+    required this.status,
+    required this.time,
+    required String filePath,
+    String? text,
+    this.senderName = '',
+    this.isDeleted = false,
+    this.reacts = const {},
+    this.senderColor,
+    this.tags = const [],
+    this.isForwarded = false,
+    this.replyMessageInfo,
+    this.id = '',
+  })  : content = text,
+        attachment = filePath,
+        isInfo = false,
+        attachmentType = AttachmentType.videoLocal;
+
+  /// Constructs a message with a video attachment with a network url.
+  const ZdsMessage.audioNetwork({
+    required this.status,
+    required this.time,
+    required String url,
+    String? text,
+    this.senderName = '',
+    this.isDeleted = false,
+    this.reacts = const {},
+    this.senderColor,
+    this.tags = const [],
+    this.isForwarded = false,
+    this.replyMessageInfo,
+    this.id = '',
+  })  : content = text,
+        attachment = url,
+        isInfo = false,
+        attachmentType = AttachmentType.audioNetwork;
+
+  // TODO(thelukewalton): UX-940 Add constructors for messages with audio.
 
   /// Constructs an info message used to display updates to user. Message not from another user.
   const ZdsMessage.info({
@@ -151,7 +270,7 @@ class ZdsMessage {
   final String id;
 
   /// Type of file attached to message.
-  final dynamic attachmentType;
+  final AttachmentType? attachmentType;
 
   /// [ZdsChatMessageType] of message.
   ZdsChatMessageType get type => attachment != null
@@ -173,6 +292,27 @@ class ZdsMessage {
       }
     }
     return '';
+  }
+
+  /// Returns true if the attachment can be previewed inline, or if it must be downloaded.
+  bool get isPreviewable {
+    if (attachmentType == AttachmentType.imageBase64) {
+      return isBase64(attachment as String);
+    }
+    if (attachmentType == AttachmentType.imageNetwork ||
+        attachmentType == AttachmentType.videoNetwork ||
+        attachmentType == AttachmentType.docNetwork) {
+      return Uri.tryParse(attachment as String) != null;
+    }
+
+    if (attachmentType == AttachmentType.imageLocal) {
+      final File file = attachment as File;
+      final String? mime = lookupMimeType(file.path);
+
+      return file.existsSync() && mime != null && mime.contains('image');
+    }
+
+    return false;
   }
 }
 
@@ -216,4 +356,38 @@ extension ZdsMessageStatusExtension on ZdsChatMessageStatus {
         return ComponentStrings.of(context).get('MSG_ERR', 'Message status unknown');
     }
   }
+}
+
+/// Type of attachment provided.
+enum AttachmentType {
+  /// Image string formatted as Base64.
+  imageBase64,
+
+  /// Url of image.
+  imageNetwork,
+
+  /// File directory where image is saved.
+  imageLocal,
+
+  /// Url of video
+  videoNetwork,
+
+  /// File directory where video is saved.
+  videoLocal,
+
+  /// Url of audio file.
+  audioNetwork,
+
+  /// File directory where audio is saved.
+  audioLocal,
+
+  /// Url of file.
+  ///
+  /// In this case, doc refers to any file that is not image, video or audio.
+  docNetwork,
+
+  /// File directory where doc is saved.
+  ///
+  /// In this case, doc refers to any file that is not image, video or audio.
+  docLocal
 }
