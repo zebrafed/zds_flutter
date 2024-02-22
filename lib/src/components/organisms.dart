@@ -4,6 +4,7 @@ export 'organisms/app_bar.dart';
 export 'organisms/bottom_bar.dart';
 export 'organisms/bottom_tab_bar.dart';
 export 'organisms/calendar.dart';
+export 'organisms/chat/chat.dart';
 export 'organisms/date_range.dart';
 export 'organisms/date_range_picker_tile.dart';
 export 'organisms/day_picker.dart';
