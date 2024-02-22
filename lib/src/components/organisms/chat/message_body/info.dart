@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import '../../../../../zds_flutter.dart';
 
 /// Info message body for [ZdsChatMessage].
-class InfoMessage extends StatelessWidget {
-  /// Constructs an [InfoMessage].
-  const InfoMessage({super.key, required this.content});
+class ZdsChatInfoMessage extends StatelessWidget {
+  /// Constructs an [ZdsChatInfoMessage].
+  const ZdsChatInfoMessage({super.key, required this.content});
 
   /// Text content displayed in the center of the chat.
   final String content;

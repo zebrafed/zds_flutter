@@ -7,9 +7,9 @@ import '../../../../../zds_flutter.dart';
 import '../chat_utils.dart';
 
 /// Text message for [ZdsChatMessage].
-class TextMessage extends StatelessWidget {
-  /// Constructs a [TextMessage].
-  const TextMessage({
+class ZdsChatTextMessage extends StatelessWidget {
+  /// Constructs a [ZdsChatTextMessage].
+  const ZdsChatTextMessage({
     super.key,
     this.searchTerm,
     required this.content,

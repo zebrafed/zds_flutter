@@ -5,9 +5,9 @@ import '../../../../../zds_flutter.dart';
 import '../chat_utils.dart';
 
 /// Read Receipt component for [ZdsChatMessage].
-class ReadReceipt extends StatelessWidget {
-  /// Constructs a [ReadReceipt].
-  const ReadReceipt({
+class ZdsReadReceipt extends StatelessWidget {
+  /// Constructs a [ZdsReadReceipt].
+  const ZdsReadReceipt({
     super.key,
     required this.isLocalUser,
     required this.status,
@@ -21,8 +21,8 @@ class ReadReceipt extends StatelessWidget {
   /// If the message was sent by the local user.
   final bool isLocalUser;
 
-  /// Status of the message. See [MessageStatus].
-  final MessageStatus status;
+  /// Status of the message. See [ZdsChatMessageStatus].
+  final ZdsChatMessageStatus status;
 
   /// Whether or not the associated message has been deleted.
   final bool messageDeleted;
@@ -46,11 +46,13 @@ class ReadReceipt extends StatelessWidget {
               style: themeData.textTheme.bodySmall?.copyWith(color: zetaColors.textSubtle, fontWeight: FontWeight.w500),
             ),
             if (isLocalUser) const SizedBox(width: 6),
-            if (isLocalUser && status != MessageStatus.notSent && !messageDeleted)
+            if (isLocalUser && status != ZdsChatMessageStatus.notSent && !messageDeleted)
               Icon(
-                (status == MessageStatus.read || status == MessageStatus.delivered) ? Icons.done_all : Icons.done,
+                (status == ZdsChatMessageStatus.read || status == ZdsChatMessageStatus.delivered)
+                    ? Icons.done_all
+                    : Icons.done,
                 size: 16,
-                color: status == MessageStatus.read ? themeData.colorScheme.secondary : zetaColors.iconSubtle,
+                color: status == ZdsChatMessageStatus.read ? themeData.colorScheme.secondary : zetaColors.iconSubtle,
               ),
           ],
         ),
@@ -64,7 +66,7 @@ class ReadReceipt extends StatelessWidget {
     properties
       ..add(DiagnosticsProperty<String>('timeString', timeString))
       ..add(DiagnosticsProperty<bool>('isLocalUser', isLocalUser))
-      ..add(EnumProperty<MessageStatus>('status', status))
+      ..add(EnumProperty<ZdsChatMessageStatus>('status', status))
       ..add(DiagnosticsProperty<bool>('messageDeleted', messageDeleted));
   }
 }

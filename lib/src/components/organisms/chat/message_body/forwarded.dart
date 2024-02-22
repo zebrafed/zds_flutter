@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../../../zds_flutter.dart';
 
 /// Forwarded widget for [ZdsChatMessage].
-class Forwarded extends StatelessWidget {
-  /// Constructs a [Forwarded].
-  const Forwarded({super.key});
+class ZdsChatForwarded extends StatelessWidget {
+  /// Constructs a [ZdsChatForwarded].
+  const ZdsChatForwarded({super.key});
 
   @override
   Widget build(BuildContext context) {

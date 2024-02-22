@@ -5,7 +5,7 @@ import 'package:validators/validators.dart';
 import '../../../../zds_flutter.dart';
 
 /// Type of message for [ZdsChatMessage].
-enum MessageType {
+enum ZdsChatMessageType {
   /// Text only message.
   text,
 
@@ -17,7 +17,7 @@ enum MessageType {
 }
 
 /// Status of message for [ZdsChatMessage].
-enum MessageStatus {
+enum ZdsChatMessageStatus {
   /// Message not yet sent.
   notSent,
 
@@ -35,13 +35,13 @@ enum MessageStatus {
 }
 
 /// Message model for [ZdsChatMessage].
-class Message {
-  /// Constructs a [Message].
+class ZdsMessage {
+  /// Constructs a [ZdsMessage].
   ///
-  /// For data safety, please use a named constructor: [Message.text], [Message.attachment] or [Message.info].
-  const Message({
+  /// For data safety, please use a named constructor: [ZdsMessage.text], [ZdsMessage.attachment] or [ZdsMessage.info].
+  const ZdsMessage({
     required this.time,
-    this.status = MessageStatus.unknown,
+    this.status = ZdsChatMessageStatus.unknown,
     this.senderName = '',
     this.content,
     this.isDeleted = false,
@@ -57,7 +57,7 @@ class Message {
   });
 
   /// Constructs a Text only message.
-  const Message.text({
+  const ZdsMessage.text({
     required this.status,
     required this.time,
     required this.content,
@@ -74,7 +74,7 @@ class Message {
         attachmentType = null;
 
   /// Constructs an info message used to display updates to user. Message not from another user.
-  const Message.info({
+  const ZdsMessage.info({
     required this.content,
     this.time,
     this.id = '',
@@ -87,13 +87,13 @@ class Message {
         isForwarded = false,
         isInfo = true,
         tags = const [],
-        status = MessageStatus.notSent,
+        status = ZdsChatMessageStatus.notSent,
         attachmentType = null;
 
   /// Constructs a blank message. Should not normally be used.
   ///
   /// Used for [ZdsChatMessage.wrapper].
-  const Message.blank()
+  const ZdsMessage.blank()
       : attachment = null,
         content = null,
         senderColor = null,
@@ -101,7 +101,7 @@ class Message {
         isDeleted = false,
         reacts = const {},
         senderName = '',
-        status = MessageStatus.unknown,
+        status = ZdsChatMessageStatus.unknown,
         tags = const [],
         isInfo = false,
         isForwarded = false,
@@ -126,8 +126,8 @@ class Message {
   /// Defaults to using [ZetaColors.textDefault].
   final Color? senderColor;
 
-  /// [MessageStatus] of message.
-  final MessageStatus status;
+  /// [ZdsChatMessageStatus] of message.
+  final ZdsChatMessageStatus status;
 
   /// Time message was sent.
   final DateTime? time;
@@ -145,7 +145,7 @@ class Message {
   final bool isForwarded;
 
   /// Contents of message that is being replied to.
-  final Message? replyMessageInfo;
+  final ZdsMessage? replyMessageInfo;
 
   /// Unique ID of message.
   final String id;
@@ -153,12 +153,12 @@ class Message {
   /// Type of file attached to message.
   final dynamic attachmentType;
 
-  /// [MessageType] of message.
-  MessageType get type => attachment != null
-      ? MessageType.attachment
+  /// [ZdsChatMessageType] of message.
+  ZdsChatMessageType get type => attachment != null
+      ? ZdsChatMessageType.attachment
       : isInfo
-          ? MessageType.info
-          : MessageType.text;
+          ? ZdsChatMessageType.info
+          : ZdsChatMessageType.text;
 
   /// True if message has any reacts.
   bool get hasReacts => reacts.isNotEmpty && reacts.values.any((element) => element > 0);
@@ -177,7 +177,7 @@ class Message {
 }
 
 /// Extension on [String] for [ZdsChatMessage].
-extension ChatString on String {
+extension ZdsChatString on String {
   /// Gets all URLs from a string.
   List<String> get urls {
     final RegExp exp = RegExp(
@@ -199,20 +199,20 @@ extension ChatString on String {
   }
 }
 
-/// Extension on [MessageStatus].
-extension MessageStatusExtension on MessageStatus {
+/// Extension on [ZdsChatMessageStatus].
+extension ZdsMessageStatusExtension on ZdsChatMessageStatus {
   /// Returns localized semantic label for message status.
   String label(BuildContext context) {
     switch (this) {
-      case MessageStatus.notSent:
+      case ZdsChatMessageStatus.notSent:
         return ComponentStrings.of(context).get('MSG_NOT_SENT', 'Message not sent');
-      case MessageStatus.sent:
+      case ZdsChatMessageStatus.sent:
         return ComponentStrings.of(context).get('MSG_SENT', 'Message sent');
-      case MessageStatus.delivered:
+      case ZdsChatMessageStatus.delivered:
         return ComponentStrings.of(context).get('MSG_DELIVERED', 'Message delivered');
-      case MessageStatus.read:
+      case ZdsChatMessageStatus.read:
         return ComponentStrings.of(context).get('MSG_READ', 'Message read');
-      case MessageStatus.unknown:
+      case ZdsChatMessageStatus.unknown:
         return ComponentStrings.of(context).get('MSG_ERR', 'Message status unknown');
     }
   }

@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import '../../../../../zds_flutter.dart';
 
 /// Reply message body for [ZdsChatMessage].
-class ReplyMessageBody extends StatelessWidget {
-  /// Constructs a [ReplyMessageBody].
-  const ReplyMessageBody({super.key, required this.message, this.onTap});
+class ZdsChatReplyMessageBody extends StatelessWidget {
+  /// Constructs a [ZdsChatReplyMessageBody].
+  const ZdsChatReplyMessageBody({super.key, required this.message, this.onTap});
 
   /// Message being replied to.
-  final Message message;
+  final ZdsMessage message;
 
   /// Callback when reply is tapped.
-  final ValueChanged<Message>? onTap;
+  final ValueChanged<ZdsMessage>? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class ReplyMessageBody extends StatelessWidget {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
-      ..add(DiagnosticsProperty<Message>('message', message))
-      ..add(ObjectFlagProperty<ValueChanged<Message>>.has('onTap', onTap));
+      ..add(DiagnosticsProperty<ZdsMessage>('message', message))
+      ..add(ObjectFlagProperty<ValueChanged<ZdsMessage>>.has('onTap', onTap));
   }
 }

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import '../../../../../zds_flutter.dart';
 
 /// Deleted message body for [ZdsChatMessage].
-class DeletedText extends StatelessWidget {
-  /// Constructs a [DeletedText].
-  const DeletedText({super.key, this.textContent});
+class ZdsChatDeletedText extends StatelessWidget {
+  /// Constructs a [ZdsChatDeletedText].
+  const ZdsChatDeletedText({super.key, this.textContent});
 
   /// Optional text content.
   ///

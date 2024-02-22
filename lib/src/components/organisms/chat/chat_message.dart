@@ -40,7 +40,7 @@ class ZdsChatMessage extends StatelessWidget {
     this.onTagTapped,
     this.onReactTapped,
     this.onLongPress,
-  })  : message = const Message.blank(),
+  })  : message = const ZdsMessage.blank(),
         highlight = false,
         searchTerm = '',
         onReplyTap = null,
@@ -48,8 +48,8 @@ class ZdsChatMessage extends StatelessWidget {
         onFileDownload = null,
         showFilePreview = false;
 
-  /// Information for chat message. See [Message].
-  final Message message;
+  /// Information for chat message. See [ZdsMessage].
+  final ZdsMessage message;
 
   /// If message is from local used.
   ///
@@ -79,7 +79,7 @@ class ZdsChatMessage extends StatelessWidget {
   final VoidCallback? onReactTapped;
 
   /// Callback for when replying message is tapped.
-  final ValueChanged<Message>? onReplyTap;
+  final ValueChanged<ZdsMessage>? onReplyTap;
 
   /// Callback for when a link is tapped.
   ///
@@ -130,17 +130,17 @@ class ZdsChatMessage extends StatelessWidget {
 
   Widget? get _body {
     if (message.isDeleted) {
-      return DeletedText(textContent: message.content);
-    } else if (message.type == MessageType.text && message.content != null) {
-      return TextMessage(searchTerm: searchTerm, content: message.content!, onLinkTapped: onLinkTapped);
+      return ZdsChatDeletedText(textContent: message.content);
+    } else if (message.type == ZdsChatMessageType.text && message.content != null) {
+      return ZdsChatTextMessage(searchTerm: searchTerm, content: message.content!, onLinkTapped: onLinkTapped);
     }
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    if (message.type == MessageType.info && message.content != null) {
-      return InfoMessage(content: message.content!);
+    if (message.type == ZdsChatMessageType.info && message.content != null) {
+      return ZdsChatInfoMessage(content: message.content!);
     }
     final body = _body;
 
@@ -182,8 +182,8 @@ class ZdsChatMessage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (_showReply) ReplyMessageBody(message: message.replyMessageInfo!, onTap: onReplyTap),
-                        if (_showForwarded) const Forwarded(),
+                        if (_showReply) ZdsChatReplyMessageBody(message: message.replyMessageInfo!, onTap: onReplyTap),
+                        if (_showForwarded) const ZdsChatForwarded(),
                         if (body != null) body,
                       ],
                     ),
@@ -196,7 +196,7 @@ class ZdsChatMessage extends StatelessWidget {
               ),
             ],
           ),
-          ReadReceipt(
+          ZdsReadReceipt(
             timeString: message.timeString(context),
             isLocalUser: isLocalUser,
             status: message.status,
@@ -219,8 +219,8 @@ class ZdsChatMessage extends StatelessWidget {
       ..add(StringProperty('searchTerm', searchTerm))
       ..add(ObjectFlagProperty<VoidCallback?>.has('onTagTapped', onTagTapped))
       ..add(ObjectFlagProperty<VoidCallback?>.has('onReactTapped', onReactTapped))
-      ..add(DiagnosticsProperty<Message>('message', message))
-      ..add(ObjectFlagProperty<void Function(Message info)?>.has('onReplyTap', onReplyTap))
+      ..add(DiagnosticsProperty<ZdsMessage>('message', message))
+      ..add(ObjectFlagProperty<void Function(ZdsMessage info)?>.has('onReplyTap', onReplyTap))
       ..add(ObjectFlagProperty<void Function(String link)?>.has('onLinkTapped', onLinkTapped))
       ..add(StringProperty('senderName', senderName))
       ..add(ObjectFlagProperty<VoidCallback?>.has('onLongPress', onLongPress))
