@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:pinch_zoom/pinch_zoom.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:video_player/video_player.dart';
 import '../../../../../zds_flutter.dart';
 import '../chat_utils.dart';
@@ -67,7 +68,7 @@ class _ZdsChatFilePreviewState extends State<ZdsChatFilePreview> {
     switch (widget.type) {
       case AttachmentType.imageBase64:
         hero = true;
-        body = Image.memory(const Base64Decoder().convert(widget.attachment as String));
+        body = Image.memory(const Base64Decoder().convert((widget.attachment as String).base64 ?? ''));
       case AttachmentType.imageNetwork:
         hero = true;
         body = CachedNetworkImage(
@@ -126,12 +127,17 @@ class _ZdsChatFilePreviewState extends State<ZdsChatFilePreview> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            GestureDetector(
+            InkWell(
               onTap: hero
                   ? () => unawaited(
                         Navigator.of(context).push(
-                          MaterialPageRoute<void>(
+                          CupertinoPageRoute<void>(
                             builder: (_) => _FullScreenViewer(
+                              imageBytes:
+                                  widget.type == AttachmentType.imageBase64 ? widget.attachment as String? : null,
+                              imagePath: widget.type == AttachmentType.imageLocal ? widget.attachment as String? : null,
+                              imageUrl:
+                                  widget.type == AttachmentType.imageNetwork ? widget.attachment as String? : null,
                               body: Hero(
                                 tag: widget.attachment.toString(),
                                 child: body ?? const SizedBox(),
@@ -272,36 +278,78 @@ class __VideoState extends State<_Video> {
 }
 
 class _FullScreenViewer extends StatelessWidget {
-  const _FullScreenViewer({required this.body});
+  const _FullScreenViewer({required this.body, this.imageUrl, this.imageBytes, this.imagePath});
   final Widget body;
+  final String? imageUrl;
+  final String? imageBytes;
+  final String? imagePath;
+
+  void onDragEnd(double velocity, BuildContext context) {
+    if (velocity.abs() > 100) {
+      Navigator.of(context).pop();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Stack(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          padding: const EdgeInsets.all(16),
+          color: Colors.black.onColor,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: [
+          IconButton(
+            onPressed: imageBytes != null || imagePath != null || imageUrl != null
+                ? () async {
+                    if (imageBytes != null && imageBytes!.base64Extension != null) {
+                      final image = XFile.fromData(
+                        const Base64Decoder().convert(imageBytes!.base64!),
+                        mimeType: imageBytes!.base64Extension,
+                      );
+                      await Share.shareXFiles([image]);
+                    }
+                    if (imagePath != null) {
+                      await Share.shareXFiles([XFile(imagePath!)]);
+                    }
+                    if (imageUrl != null) {
+                      await Share.shareUri(Uri.parse(imageUrl!));
+                    }
+                  }
+                : null,
+            icon: const Icon(Icons.share),
+            padding: const EdgeInsets.all(16),
+            color: Colors.black.onColor,
+          ),
+        ],
+      ),
+      body: GestureDetector(
+        onVerticalDragEnd: (d) => onDragEnd(d.primaryVelocity ?? 0, context),
+        child: Column(
           children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Center(child: PinchZoom(child: body)),
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                padding: const EdgeInsets.all(16),
-                color: Colors.black.onColor,
-                onPressed: () => Navigator.of(context).pop(),
+            Expanded(
+              child: InteractiveViewer(
+                child: body,
+                onInteractionEnd: (details) => onDragEnd(details.velocity.pixelsPerSecond.dy, context),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(StringProperty('imageUrl', imageUrl))
+      ..add(StringProperty('imagePath', imagePath))
+      ..add(StringProperty('imageBytes', imageBytes));
   }
 }

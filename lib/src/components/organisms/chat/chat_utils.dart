@@ -297,11 +297,9 @@ class ZdsMessage {
   /// Returns true if the attachment can be previewed inline, or if it must be downloaded.
   bool get isPreviewable {
     if (attachmentType == AttachmentType.imageBase64) {
-      return isBase64(attachment as String);
+      return (attachment as String).base64 != null;
     }
-    if (attachmentType == AttachmentType.imageNetwork ||
-        attachmentType == AttachmentType.videoNetwork ||
-        attachmentType == AttachmentType.docNetwork) {
+    if (attachmentType == AttachmentType.imageNetwork) {
       return Uri.tryParse(attachment as String) != null;
     }
 
@@ -336,6 +334,25 @@ extension ZdsChatString on String {
     });
 
     return urls;
+  }
+
+  /// Returns base64 string formatted.
+  String? get base64 {
+    if (isBase64(this)) return this;
+    final splitContentOnly = split(',').last;
+    if (isBase64(splitContentOnly)) return splitContentOnly;
+
+    return null;
+  }
+
+  /// Tries to retrieve extension of base64 file.
+  String? get base64Extension {
+    final splitContentOnly = split(',').last;
+    if (isBase64(splitContentOnly)) {
+      return split(';').first.split('/').last;
+    }
+
+    return null;
   }
 }
 

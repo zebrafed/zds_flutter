@@ -58,8 +58,8 @@ dependencies:
   open_filex: ^4.1.1
   path: ^1.8.0
   path_provider: ^2.0.2
-  pinch_zoom: ^2.0.0
   popover: ^0.3.0
+  share_plus: ^7.2.2
   shared_preferences: ^2.2.2
   shimmer: ^3.0.0
   table_calendar: ^3.0.3

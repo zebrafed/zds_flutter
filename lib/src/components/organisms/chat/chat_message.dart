@@ -32,7 +32,7 @@ class ZdsChatMessage extends StatelessWidget {
   })  : child = null,
         senderName = null;
 
-  /// Allows for custom child to be passed into a [ZdsChatMessage] body.Œ
+  /// Allows for custom child to be passed into a [ZdsChatMessage] body.
   const ZdsChatMessage.wrapper({
     super.key,
     required this.child,
@@ -156,8 +156,9 @@ class ZdsChatMessage extends StatelessWidget {
             ),
         ],
       );
+    } else {
+      return const Text('TODO: UX-941 Attachment ').paddingAll(12);
     }
-    return null;
   }
 
   @override
