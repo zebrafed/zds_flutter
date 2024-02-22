@@ -11,9 +11,9 @@ import '../../../../../zds_flutter.dart';
 /// Shows a preview of a link in a [ZdsChatMessage].
 ///
 /// Shows an image, the page title and the URL or page description.
-class LinkPreview extends StatefulWidget {
-  /// Constructs a [LinkPreview].
-  const LinkPreview({
+class ZdsChatLinkPreview extends StatefulWidget {
+  /// Constructs a [ZdsChatLinkPreview].
+  const ZdsChatLinkPreview({
     super.key,
     required this.link,
     this.onTap,
@@ -23,8 +23,8 @@ class LinkPreview extends StatefulWidget {
   /// Link to display.
   final String link;
 
-  /// Called when [LinkPreview] is tapped.
-  final VoidCallback? onTap;
+  /// Called when [ZdsChatLinkPreview] is tapped.
+  final ValueChanged<String>? onTap;
 
   /// If true, shows longer description of link.
   /// If false, shows URL.
@@ -33,18 +33,18 @@ class LinkPreview extends StatefulWidget {
   final bool showDescription;
 
   @override
-  State<LinkPreview> createState() => _LinkPreviewState();
+  State<ZdsChatLinkPreview> createState() => _ZdsChatLinkPreviewState();
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties
       ..add(StringProperty('link', link))
-      ..add(ObjectFlagProperty<VoidCallback>.has('onTap', onTap))
-      ..add(DiagnosticsProperty<bool>('showDescription', showDescription));
+      ..add(DiagnosticsProperty<bool>('showDescription', showDescription))
+      ..add(ObjectFlagProperty<ValueChanged<String>?>.has('onTap', onTap));
   }
 }
 
-class _LinkPreviewState extends State<LinkPreview> {
+class _ZdsChatLinkPreviewState extends State<ZdsChatLinkPreview> {
   Metadata? _metadata;
   bool _error = false;
 
@@ -123,35 +123,42 @@ class _LinkPreviewState extends State<LinkPreview> {
 
     return _error
         ? const SizedBox()
-        : Container(
-            decoration: BoxDecoration(
-              color: Zeta.of(context).colors.warm.shade30.withOpacity(0.2),
-              borderRadius: const BorderRadius.all(Radius.circular(6)),
-            ),
-            padding: const EdgeInsets.fromLTRB(14, 22, 14, 14),
-            child: GestureDetector(
-              onTap: () => widget.onTap?.call(),
-              child: AbsorbPointer(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(color: zetaColors.secondary.shade10, shape: BoxShape.circle),
-                      child: buildImage,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 14),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [buildTitle, const SizedBox(height: 8), buildDescription],
+        : Material(
+            color: Colors.transparent,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: InkWell(
+                onTap: () => widget.onTap?.call(widget.link),
+                borderRadius: const BorderRadius.all(Radius.circular(6)),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Zeta.of(context).colors.warm.shade30.withOpacity(0.2),
+                    borderRadius: const BorderRadius.all(Radius.circular(6)),
+                  ),
+                  padding: const EdgeInsets.all(14),
+                  child: AbsorbPointer(
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(color: zetaColors.secondary.shade10, shape: BoxShape.circle),
+                          child: buildImage,
                         ),
-                      ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 14),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [buildTitle, const SizedBox(height: 8), buildDescription],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),

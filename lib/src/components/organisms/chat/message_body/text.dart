@@ -68,7 +68,7 @@ class ZdsChatTextMessage extends StatelessWidget {
               words: wordsMapping,
             ),
           ),
-          if (urls.isNotEmpty && !kIsWeb) LinkPreview(link: urls.first),
+          if (urls.isNotEmpty && !kIsWeb) ZdsChatLinkPreview(link: urls.first, onTap: onLinkTapped),
         ],
       ),
     );
