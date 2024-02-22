@@ -18,7 +18,7 @@ class ZdsChatFilePreview extends StatefulWidget {
     this.attachment,
     required this.type,
     this.fileName,
-    this.canDownload = true,
+    this.downloadCallback,
   });
 
   /// Constructs a file preview for image strings in base64 format.
@@ -26,7 +26,7 @@ class ZdsChatFilePreview extends StatefulWidget {
     super.key,
     required String imageString,
     this.fileName,
-    this.canDownload = true,
+    this.downloadCallback,
   })  : attachment = imageString,
         type = AttachmentType.imageBase64;
 
@@ -41,10 +41,9 @@ class ZdsChatFilePreview extends StatefulWidget {
   /// If not provided, generic download prompt will show.
   final String? fileName;
 
-  /// True if the user can download the file.
-  ///
-  /// Downloading does not happen in this widget, but should be triggered by a callback in [ZdsChatMessage].
-  final bool canDownload;
+  /// Callback to trigger file download.
+  final VoidCallback? downloadCallback;
+
   @override
   State<ZdsChatFilePreview> createState() => _ZdsChatFilePreviewState();
   @override
@@ -54,7 +53,7 @@ class ZdsChatFilePreview extends StatefulWidget {
       ..add(DiagnosticsProperty('attachment', attachment))
       ..add(EnumProperty<AttachmentType>('type', type))
       ..add(StringProperty('fileName', fileName))
-      ..add(DiagnosticsProperty<bool>('canDownload', canDownload));
+      ..add(ObjectFlagProperty<VoidCallback>.has('downloadCallback', downloadCallback));
   }
 }
 
@@ -100,46 +99,56 @@ class _ZdsChatFilePreviewState extends State<ZdsChatFilePreview> {
         body = const Text('Not done');
     }
 
-    final Widget downloadRow = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(ZdsIcons.download, size: 24, color: Zeta.of(context).colors.iconSubtle),
-        const SizedBox.square(dimension: 10),
-        Text(
-          widget.fileName ?? ComponentStrings.of(context).get('DOWNLOAD', 'Download'),
-          style: Theme.of(context).textTheme.bodyMedium,
+    final Widget downloadRow = InkWell(
+      onTap: () => widget.downloadCallback?.call(),
+      borderRadius: BorderRadius.circular(6),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(ZdsIcons.download, size: 24, color: Zeta.of(context).colors.iconSubtle),
+            const SizedBox.square(dimension: 10),
+            Text(
+              widget.fileName ?? ComponentStrings.of(context).get('DOWNLOAD', 'Download'),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ],
         ),
-      ],
+      ),
     );
 
-    return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          InkWell(
-            onTap: hero
-                ? () => unawaited(
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => _FullScreenViewer(
-                            body: Hero(
-                              tag: widget.attachment.toString(),
-                              child: body ?? const SizedBox(),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: hero
+                  ? () => unawaited(
+                        Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => _FullScreenViewer(
+                              body: Hero(
+                                tag: widget.attachment.toString(),
+                                child: body ?? const SizedBox(),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    )
-                : null,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: hero ? Hero(tag: widget.attachment.toString(), child: body) : body,
+                      )
+                  : null,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: hero ? Hero(tag: widget.attachment.toString(), child: body) : body,
+              ),
             ),
-          ),
-          if (widget.canDownload && !_fileError) downloadRow.paddingOnly(top: 8),
-        ],
+            if (widget.downloadCallback != null && !_fileError) downloadRow,
+          ],
+        ),
       ),
     );
   }
@@ -175,7 +184,7 @@ class __VideoState extends State<_Video> {
   VideoPlayerController? _videoController;
   bool loading = true;
   bool? isPlaying;
-
+  bool _hover = false;
   @override
   Future<void> dispose() async {
     super.dispose();
@@ -209,40 +218,46 @@ class __VideoState extends State<_Video> {
   @override
   Widget build(BuildContext context) {
     // TODO(thelukewalton): Videos don't play on emulator / simulator. https://github.com/flutter/flutter/issues/75995
-    return AspectRatio(
-      aspectRatio: _videoController?.value.aspectRatio ?? 16 / 9,
-      child: Stack(
-        children: [
-          if (_videoController != null) VideoPlayer(_videoController!),
-          if (_videoController == null || !_videoController!.value.isInitialized || _videoController!.value.isBuffering)
-            const Center(child: CircularProgressIndicator.adaptive()),
-          if (!loading &&
-              _videoController != null &&
-              _videoController!.value.isInitialized &&
-              !_videoController!.value.isBuffering)
-            Center(
-              child: FloatingActionButton(
-                elevation: 0,
-                onPressed: () async {
-                  _videoController!.value.isPlaying ? await _videoController!.pause() : await _videoController!.play();
-                  setState(() {});
-                },
-                backgroundColor:
-                    Zeta.of(context).colors.cool.shade30.withOpacity(_videoController!.value.isPlaying ? 0 : 0.5),
-                hoverColor: Zeta.of(context).colors.cool.shade30.withOpacity(0.5),
-                hoverElevation: 0,
-                child: Icon(
-                  _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                  color: Zeta.of(context)
-                      .colors
-                      .cool
-                      .shade30
-                      .onColor
-                      .withOpacity(_videoController!.value.isPlaying ? 0.5 : 1),
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hover = true),
+      onExit: (_) => setState(() => _hover = false),
+      child: AspectRatio(
+        aspectRatio: _videoController?.value.aspectRatio ?? 16 / 9,
+        child: Stack(
+          children: [
+            if (_videoController != null) VideoPlayer(_videoController!),
+            if (_videoController == null ||
+                !_videoController!.value.isInitialized ||
+                _videoController!.value.isBuffering)
+              const Center(child: CircularProgressIndicator.adaptive()),
+            if (!loading &&
+                _videoController != null &&
+                _videoController!.value.isInitialized &&
+                !_videoController!.value.isBuffering)
+              AnimatedOpacity(
+                opacity: _hover || !_videoController!.value.isPlaying ? 1 : 0,
+                duration: const Duration(milliseconds: 300),
+                child: Center(
+                  child: FloatingActionButton(
+                    elevation: 0,
+                    onPressed: () async {
+                      _videoController!.value.isPlaying
+                          ? await _videoController!.pause()
+                          : await _videoController!.play();
+                      setState(() {});
+                    },
+                    backgroundColor: Zeta.of(context).colors.cool.shade30.withOpacity(0.7),
+                    hoverColor: Zeta.of(context).colors.cool.shade30.withOpacity(0.5),
+                    hoverElevation: 0,
+                    child: Icon(
+                      _videoController!.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: Zeta.of(context).colors.cool.shade30.onColor,
+                    ),
+                  ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

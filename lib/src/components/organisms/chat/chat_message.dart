@@ -32,7 +32,7 @@ class ZdsChatMessage extends StatelessWidget {
   })  : child = null,
         senderName = null;
 
-  /// Allows for custom child to be passed into a [ZdsChatMessage] body.
+  /// Allows for custom child to be passed into a [ZdsChatMessage] body.Œ
   const ZdsChatMessage.wrapper({
     super.key,
     required this.child,
@@ -137,7 +137,7 @@ class ZdsChatMessage extends StatelessWidget {
       return ZdsChatDeletedText(textContent: message.content);
     } else if (message.type == ZdsChatMessageType.text && message.content != null) {
       return ZdsChatTextMessage(searchTerm: searchTerm, content: message.content!, onLinkTapped: onLinkTapped);
-    } else if (message.isPreviewable && showFilePreview) {
+    } else if (message.isPreviewable) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -148,11 +148,12 @@ class ZdsChatMessage extends StatelessWidget {
               onLinkTapped: onLinkTapped,
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 0),
             ),
-          ZdsChatFilePreview(
-            type: message.attachmentType!,
-            attachment: message.attachment,
-            canDownload: onFileDownload != null,
-          ),
+          if (showFilePreview)
+            ZdsChatFilePreview(
+              type: message.attachmentType!,
+              attachment: message.attachment,
+              downloadCallback: onFileDownload,
+            ),
         ],
       );
     }
