@@ -74,16 +74,17 @@ class _ZdsChatFilePreviewState extends State<ZdsChatFilePreview> {
         body = CachedNetworkImage(
           imageUrl: widget.attachment as String,
           errorListener: (value) => setState(() => _fileError = true),
-          placeholder: (context, url) {
-            return const CircularProgressIndicator.adaptive();
-          },
+          placeholder: (context, url) => const CircularProgressIndicator.adaptive(),
           errorWidget: (context, url, error) {
-            return Text(
-              ComponentStrings.of(context).get('MEDIA_ERROR', 'Error loading media.'),
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: Zeta.of(context).colors.error.text,
-                  ),
+            return Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text(
+                ComponentStrings.of(context).get('MEDIA_ERROR', 'Error loading media.'),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontStyle: FontStyle.italic,
+                      color: Zeta.of(context).colors.error.text,
+                    ),
+              ),
             );
           },
         );
@@ -128,7 +129,7 @@ class _ZdsChatFilePreviewState extends State<ZdsChatFilePreview> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             InkWell(
-              onTap: hero
+              onTap: !_fileError && hero
                   ? () => unawaited(
                         Navigator.of(context).push(
                           CupertinoPageRoute<void>(
@@ -330,12 +331,18 @@ class _FullScreenViewer extends StatelessWidget {
       ),
       body: GestureDetector(
         onVerticalDragEnd: (d) => onDragEnd(d.primaryVelocity ?? 0, context),
-        child: Column(
+        child: Row(
           children: [
             Expanded(
-              child: InteractiveViewer(
-                child: body,
-                onInteractionEnd: (details) => onDragEnd(details.velocity.pixelsPerSecond.dy, context),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: InteractiveViewer(
+                      child: body,
+                      onInteractionEnd: (details) => onDragEnd(details.velocity.pixelsPerSecond.dy, context),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
