@@ -120,6 +120,12 @@ class _ZdsChatFilePreviewState extends State<ZdsChatFilePreview> {
       ),
     );
 
+    final heroWidget = Hero(
+      createRectTween: (Rect? begin, Rect? end) => RectTween(begin: begin, end: end),
+      tag: widget.attachment.toString(),
+      child: body,
+    );
+
     return Material(
       color: Colors.transparent,
       child: Container(
@@ -132,17 +138,15 @@ class _ZdsChatFilePreviewState extends State<ZdsChatFilePreview> {
               onTap: !_fileError && hero
                   ? () => unawaited(
                         Navigator.of(context).push(
-                          CupertinoPageRoute<void>(
+                          ZdsFadePageRouteBuilder(
+                            opaque: false,
                             builder: (_) => _FullScreenViewer(
                               imageBytes:
                                   widget.type == AttachmentType.imageBase64 ? widget.attachment as String? : null,
                               imagePath: widget.type == AttachmentType.imageLocal ? widget.attachment as String? : null,
                               imageUrl:
                                   widget.type == AttachmentType.imageNetwork ? widget.attachment as String? : null,
-                              body: Hero(
-                                tag: widget.attachment.toString(),
-                                child: body ?? const SizedBox(),
-                              ),
+                              body: heroWidget,
                             ),
                           ),
                         ),
@@ -150,7 +154,7 @@ class _ZdsChatFilePreviewState extends State<ZdsChatFilePreview> {
                   : null,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: hero ? Hero(tag: widget.attachment.toString(), child: body) : body,
+                child: hero ? heroWidget : body,
               ),
             ),
             if (widget.downloadCallback != null && !_fileError) downloadRow,
@@ -294,13 +298,12 @@ class _FullScreenViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.black.withOpacity(0.8),
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.black,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          padding: const EdgeInsets.all(16),
           color: Colors.black.onColor,
           onPressed: () => Navigator.of(context).pop(),
         ),

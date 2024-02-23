@@ -98,7 +98,7 @@ class ChatDemo extends StatelessWidget {
         message: ZdsMessage(
           time: DateTime.now(),
           isInfo: true,
-          content: 'Younglings destroyed',
+          content: 'Info Message',
           status: ZdsChatMessageStatus.read,
         ),
       ),
