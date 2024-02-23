@@ -21,11 +21,14 @@ class _ButtonDemoState extends State<ButtonDemo> {
   @override
   void initState() {
     scrollController.addListener(() {
-      if (scrollController.position.userScrollDirection == ScrollDirection.reverse && scrollController.offset > 32) {
+      if (scrollController.position.userScrollDirection ==
+              ScrollDirection.reverse &&
+          scrollController.offset > 32) {
         setState(() {
           _isLabelVisible = false;
         });
-      } else if (scrollController.position.userScrollDirection == ScrollDirection.forward) {
+      } else if (scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
         setState(() {
           _isLabelVisible = true;
         });
@@ -47,13 +50,21 @@ class _ButtonDemoState extends State<ButtonDemo> {
     final floatingActionButton = ZdsFloatingActionButton.extended(
       icon: const Icon(ZdsIcons.edit),
       extendedIconLabelSpacing: _isLabelVisible ? null : 0,
-      extendedPadding: _isLabelVisible ? null : const EdgeInsetsDirectional.only(start: 10, end: 8),
+      extendedPadding: _isLabelVisible
+          ? null
+          : const EdgeInsetsDirectional.only(start: 10, end: 8),
       label: AnimatedSwitcher(
         transitionBuilder: (Widget child, Animation<double> animation) {
-          return SizeTransition(sizeFactor: animation, axis: Axis.horizontal, axisAlignment: -1, child: child);
+          return SizeTransition(
+              sizeFactor: animation,
+              axis: Axis.horizontal,
+              axisAlignment: -1,
+              child: child);
         },
         duration: const Duration(milliseconds: 300),
-        child: _isLabelVisible ? const Text('Show non-expanding FAB') : const SizedBox.shrink(),
+        child: _isLabelVisible
+            ? const Text('Show non-expanding FAB')
+            : const SizedBox.shrink(),
       ),
       onPressed: () => setState(() => _isFabExtended = !_isFabExtended),
     );
@@ -71,7 +82,8 @@ class _ButtonDemoState extends State<ButtonDemo> {
         child: Column(
           children: [
             for (final hasOnTap in [true, false]) ...[
-              Text('${hasOnTap ? 'with' : 'without'} onTap', style: Theme.of(context).textTheme.displayLarge),
+              Text('${hasOnTap ? 'with' : 'without'} onTap',
+                  style: Theme.of(context).textTheme.displayLarge),
               const SizedBox(height: 10),
               ZdsButton.filled(
                 onTap: hasOnTap ? () {} : null,
@@ -114,6 +126,44 @@ class _ButtonDemoState extends State<ButtonDemo> {
               ZdsButton.muted(
                 onTap: hasOnTap ? () {} : null,
                 child: const Text('Muted'),
+              ),
+              const SizedBox(height: 10),
+              CircleIconButton(
+                icon: ZetaIcons.end_call_round,
+                label: "Reject",
+                type: CircleButtonType.negative,
+                onTap: () {
+                  print("Tap");
+                },
+              ),
+              const SizedBox(height: 10),
+              CircleIconButton(
+                icon: ZetaIcons.phone_round,
+                label: "Accept",
+                type: CircleButtonType.positive,
+                onTap: () {
+                  print("Tap");
+                },
+              ),
+              const SizedBox(height: 10),
+              CircleIconButton(
+                icon: ZetaIcons.microphone_round,
+                label: "Mute",
+                type: CircleButtonType.base,
+                activeIcon: ZetaIcons.microphone_off_round,
+                activeLabel: "Un-Mute",
+                onTap: () {
+                  print("Tap");
+                },
+              ),
+              const SizedBox(height: 10),
+              CircleIconButton(
+                icon: ZetaIcons.alert_round,
+                label: "Security",
+                type: CircleButtonType.alert,
+                onTap: () {
+                  print("Tap");
+                },
               ),
             ],
             Row(
@@ -186,7 +236,8 @@ class _ButtonDemoState extends State<ButtonDemo> {
               label: 'Mon',
             ),
             const SizedBox(height: 50),
-            Text('Selection pills', style: Theme.of(context).textTheme.displayLarge),
+            Text('Selection pills',
+                style: Theme.of(context).textTheme.displayLarge),
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -198,7 +249,8 @@ class _ButtonDemoState extends State<ButtonDemo> {
                     ZdsSelectionPill(
                       selected: isButtonSelected,
                       label: 'All',
-                      onTap: () => setState(() => isButtonSelected = !isButtonSelected),
+                      onTap: () =>
+                          setState(() => isButtonSelected = !isButtonSelected),
                       leadingIcon: const Icon(ZdsIcons.person_info),
                       onClose: () {},
                     ),
@@ -206,7 +258,8 @@ class _ButtonDemoState extends State<ButtonDemo> {
                       selected: !isButtonSelected,
                       label: 'Approved',
                       leadingIcon: const Icon(ZdsIcons.person_info),
-                      onTap: () => setState(() => isButtonSelected = !isButtonSelected),
+                      onTap: () =>
+                          setState(() => isButtonSelected = !isButtonSelected),
                       onClose: () {},
                     ),
                     ZdsSelectionPill(
@@ -243,7 +296,8 @@ class _ButtonDemoState extends State<ButtonDemo> {
                     buttonIcon: ZdsIcons.clock_stop,
                   ),
                   const SizedBox(height: 36),
-                  Text('Active, with animation, stays completed', style: Theme.of(context).textTheme.headlineMedium),
+                  Text('Active, with animation, stays completed',
+                      style: Theme.of(context).textTheme.headlineMedium),
                   const SizedBox(height: 12),
                   ZdsButton.filled(
                     child: const Text('Reset toggle'),
@@ -265,7 +319,8 @@ class _ButtonDemoState extends State<ButtonDemo> {
                     },
                   ),
                   const SizedBox(height: 36),
-                  Text('Active, basic without animation', style: Theme.of(context).textTheme.headlineMedium),
+                  Text('Active, basic without animation',
+                      style: Theme.of(context).textTheme.headlineMedium),
                   const SizedBox(height: 12),
                   ZdsSlidableButton(
                     buttonColor: Zeta.of(context).colors.iconDefault,
@@ -299,7 +354,8 @@ class _ButtonDemoState extends State<ButtonDemo> {
                     },
                   ),
                   const SizedBox(height: 36),
-                  Text('Disabled, no message', style: Theme.of(context).textTheme.headlineMedium),
+                  Text('Disabled, no message',
+                      style: Theme.of(context).textTheme.headlineMedium),
                   const SizedBox(height: 12),
                   ZdsSlidableButton(
                     buttonColor: Zeta.of(context).colors.iconDefault,
@@ -308,14 +364,16 @@ class _ButtonDemoState extends State<ButtonDemo> {
                     buttonSliderColor: Zeta.of(context).colors.warm.surface,
                   ),
                   const SizedBox(height: 36),
-                  Text('Disabled with message', style: Theme.of(context).textTheme.headlineMedium),
+                  Text('Disabled with message',
+                      style: Theme.of(context).textTheme.headlineMedium),
                   const SizedBox(height: 12),
                   ZdsSlidableButton(
                     buttonColor: Zeta.of(context).colors.iconDefault,
                     buttonText: 'Clock Out',
                     buttonIcon: ZdsIcons.clock_stop,
                     buttonSliderColor: Zeta.of(context).colors.warm.surface,
-                    disabledMessage: 'Disabled message that is quite long and goes over two lines',
+                    disabledMessage:
+                        'Disabled message that is quite long and goes over two lines',
                   ),
                 ],
               ),
@@ -327,7 +385,8 @@ class _ButtonDemoState extends State<ButtonDemo> {
     );
   }
 
-  void showToast(BuildContext context, Color color, String title, {Color? backgroundColor}) {
+  void showToast(BuildContext context, Color color, String title,
+      {Color? backgroundColor}) {
     ScaffoldMessenger.of(context).showZdsToast(
       ZdsToast(
         multiLine: true,
