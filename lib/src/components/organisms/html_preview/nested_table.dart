@@ -52,6 +52,7 @@ class ZdsNestedTableView extends StatelessWidget {
           },
           initialSettings: InAppWebViewSettings(
             useShouldOverrideUrlLoading: true,
+            mediaPlaybackRequiresUserGesture: false,
             allowsInlineMediaPlayback: true,
           ),
           onPageCommitVisible: (controller, url) {

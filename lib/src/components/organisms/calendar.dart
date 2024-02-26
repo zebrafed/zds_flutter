@@ -570,7 +570,7 @@ class _ZdsCalendarState extends State<ZdsCalendar> {
                 const Spacer(),
                 ZdsPopupMenu(
                   items: [
-                    for (int i = _rangeStart?.year ?? 1950; i <= (_rangeEnd?.year ?? 2050); i++)
+                    for (int i = _rangeStart?.year ?? 1940; i <= (_rangeEnd?.year ?? 2050); i++)
                       ZdsPopupMenuItem(
                         value: i,
                         child: ListTile(

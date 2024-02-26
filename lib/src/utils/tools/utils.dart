@@ -811,3 +811,25 @@ extension ColorFromString on String {
     return namedColors[toLowerCase()];
   }
 }
+
+/// Extension to determine if a [num] is a whole number.
+extension Whole on num {
+  /// Extension to determine if a [num] is a whole number.
+  bool get isWhole => this % 1 == 0;
+}
+
+/// Extension on [Duration]
+extension DurationFormatter on Duration {
+  /// Returns a string with days, hours, minutes, and seconds in the
+  /// following format: `MM:SS`. For example,
+  ///
+  ///   var d = new Duration( minutes:1, seconds:20);
+  ///   d.formatted();  // "1:20"
+  String formatted() {
+    final segments = [inMinutes.remainder(60), inSeconds.remainder(60)].map((seg) {
+      return seg.toString().padLeft(2, '0');
+    }).toList();
+
+    return segments.join(':');
+  }
+}
