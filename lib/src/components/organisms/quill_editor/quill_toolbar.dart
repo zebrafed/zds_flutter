@@ -6,6 +6,7 @@ import 'package:flutter_quill/src/widgets/toolbar/buttons/arrow_indicated_list_b
 import 'package:flutter_quill/translations.dart';
 
 import '../../../../zds_flutter.dart';
+import 'color_button.dart';
 
 /// enum for toolbar position
 ///
@@ -25,12 +26,6 @@ enum QuillToolbarOption {
 
   ///redo
   redo,
-
-  ///fontFamily
-  fontFamily,
-
-  ///fontSize
-  fontSize,
 
   ///bold
   bold,
@@ -159,8 +154,6 @@ class ZdsQuillToolbar extends QuillToolbar {
       locale: (langCode?.isNotEmpty ?? false) ? Locale(langCode!.substring(0, 2)) : null,
       showUndo: toolbarOptions.contains(QuillToolbarOption.undo),
       showRedo: toolbarOptions.contains(QuillToolbarOption.redo),
-      showFontFamily: toolbarOptions.contains(QuillToolbarOption.fontFamily),
-      showFontSize: toolbarOptions.contains(QuillToolbarOption.fontSize),
       showBoldButton: toolbarOptions.contains(QuillToolbarOption.bold),
       showItalicButton: toolbarOptions.contains(QuillToolbarOption.italic),
       showUnderLineButton: toolbarOptions.contains(QuillToolbarOption.underline),
@@ -175,7 +168,6 @@ class ZdsQuillToolbar extends QuillToolbar {
       showListNumbers: toolbarOptions.contains(QuillToolbarOption.numberList),
       showListBullets: toolbarOptions.contains(QuillToolbarOption.bullets),
       showListCheck: toolbarOptions.contains(QuillToolbarOption.checkBox),
-      showCodeBlock: toolbarOptions.contains(QuillToolbarOption.codeBlock),
       showIndent: toolbarOptions.contains(QuillToolbarOption.indentation),
       showQuote: toolbarOptions.contains(QuillToolbarOption.quotes),
       showLink: toolbarOptions.contains(QuillToolbarOption.link),
@@ -206,8 +198,6 @@ class ZdsQuillToolbar extends QuillToolbar {
     WrapCrossAlignment toolbarIconCrossAlignment = WrapCrossAlignment.center,
     bool multiRowsDisplay = true,
     bool showDividers = true,
-    bool showFontFamily = true,
-    bool showFontSize = true,
     bool showBoldButton = true,
     bool showItalicButton = true,
     bool showSmallButton = false,
@@ -226,7 +216,6 @@ class ZdsQuillToolbar extends QuillToolbar {
     bool showListNumbers = true,
     bool showListBullets = true,
     bool showListCheck = true,
-    bool showCodeBlock = true,
     bool showQuote = true,
     bool showIndent = true,
     bool showLink = true,
@@ -236,6 +225,7 @@ class ZdsQuillToolbar extends QuillToolbar {
     bool showSearchButton = true,
     bool showSubscript = true,
     bool showSuperscript = true,
+    bool showCodeBlock = false,
     List<QuillToolbarCustomButton> customButtons = const <QuillToolbarCustomButton>[],
 
     /// Toolbar items to display for controls of embed blocks
@@ -285,9 +275,7 @@ class ZdsQuillToolbar extends QuillToolbar {
     Key? key,
   }) {
     final List<bool> isButtonGroupShown = <bool>[
-      showFontFamily ||
-          showFontSize ||
-          showBoldButton ||
+      showBoldButton ||
           showItalicButton ||
           showSmallButton ||
           showUnderLineButton ||
@@ -299,7 +287,7 @@ class ZdsQuillToolbar extends QuillToolbar {
           embedButtons != null && embedButtons.isNotEmpty,
       showLeftAlignment || showCenterAlignment || showRightAlignment || showJustifyAlignment || showDirection,
       showHeaderStyle,
-      showListNumbers || showListBullets || showListCheck || showCodeBlock,
+      showListNumbers || showListBullets || showListCheck,
       showQuote || showIndent,
       showLink || showSearchButton,
     ];
@@ -503,20 +491,24 @@ class ZdsQuillToolbar extends QuillToolbar {
                       ),
                     ),
                   if (showInlineCode)
-                    QuillToolbarToggleStyleButton(
-                      attribute: Attribute.inlineCode,
-                      controller: controller,
-                      options: QuillToolbarToggleStyleButtonOptions(
-                        iconData: Icons.code,
-                        iconSize: toolbarIconSize,
-                        iconTheme: iconTheme,
-                        afterButtonPressed: afterButtonPressed,
-                        tooltip: buttonTooltips[ToolbarButtons.inlineCode],
-                      ),
+                    Column(
+                      children: [
+                        QuillToolbarToggleStyleButton(
+                          attribute: Attribute.inlineCode,
+                          controller: controller,
+                          options: QuillToolbarToggleStyleButtonOptions(
+                            iconData: Icons.code,
+                            iconSize: toolbarIconSize,
+                            iconTheme: iconTheme,
+                            afterButtonPressed: afterButtonPressed,
+                            tooltip: buttonTooltips[ToolbarButtons.inlineCode],
+                          ),
+                        ),
+                      ],
                     ),
                   if (showDividers) QuillToolbarDivider(axis, color: sectionDividerColor, space: sectionDividerSpace),
                   if (showColorButton)
-                    QuillToolbarColorButton(
+                    ZdsQuillToolbarColorButton(
                       controller: controller,
                       isBackground: false,
                       options: QuillToolbarColorButtonOptions(
@@ -528,7 +520,7 @@ class ZdsQuillToolbar extends QuillToolbar {
                       ),
                     ),
                   if (showBackgroundColorButton)
-                    QuillToolbarColorButton(
+                    ZdsQuillToolbarColorButton(
                       controller: controller,
                       isBackground: true,
                       options: QuillToolbarColorButtonOptions(
@@ -645,7 +637,7 @@ class ZdsQuillToolbar extends QuillToolbar {
                       attribute: Attribute.codeBlock,
                       controller: controller,
                       options: QuillToolbarToggleStyleButtonOptions(
-                        iconData: Icons.code_off,
+                        iconData: Icons.code,
                         iconSize: toolbarIconSize,
                         iconTheme: iconTheme,
                         afterButtonPressed: afterButtonPressed,

@@ -50,6 +50,7 @@ class ZdsIcons {
   static const IconData calendar_day = IconData(0xe9b5, fontFamily: _family, fontPackage: packageName);
   static const IconData calendar_edit = IconData(0xe9b6, fontFamily: _family, fontPackage: packageName);
   static const IconData calendar_month = IconData(0xe9b7, fontFamily: _family, fontPackage: packageName);
+  static const IconData calendar_next = IconData(0xe9ab, fontFamily: _family, fontPackage: packageName);
   static const IconData calendar_rollover = IconData(0xe9b8, fontFamily: _family, fontPackage: packageName);
   static const IconData calendar_today = IconData(0xe965, fontFamily: _family, fontPackage: packageName);
   static const IconData calendar_trade = IconData(0xe9ba, fontFamily: _family, fontPackage: packageName);
@@ -312,6 +313,7 @@ class ZdsIcons {
   static const IconData walk = IconData(0xe986, fontFamily: _family, fontPackage: packageName);
   static const IconData wifi = IconData(0xea18, fontFamily: _family, fontPackage: packageName);
   static const IconData write = IconData(0xe9ac, fontFamily: _family, fontPackage: packageName);
+  static const IconData file_xlsm = IconData(0xe9ae, fontFamily: _family, fontPackage: packageName);
 }
 
 const Map<String, IconData> _extensions = <String, IconData>{
@@ -348,6 +350,7 @@ const Map<String, IconData> _extensions = <String, IconData>{
   '.wav': ZdsIcons.file_audio_o,
   '.xls': ZdsIcons.file_excel_o,
   '.xlsx': ZdsIcons.file_excel_o,
+  '.xlsm': ZdsIcons.file_xlsm,
   '.xml': ZdsIcons.file_excel_o,
   '.zip': ZdsIcons.file_archive_o,
   '.url': ZdsIcons.file_o,

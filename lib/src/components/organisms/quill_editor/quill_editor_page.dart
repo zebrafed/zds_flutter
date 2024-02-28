@@ -10,9 +10,7 @@ import '../../../../zds_flutter.dart';
 import 'quill_toolbar.dart';
 
 /// Default options for ZDS Quill Toolbar
-final zdsQuillToolbarOptions = QuillToolbarOption.values.toSet()
-  ..remove(QuillToolbarOption.fontFamily)
-  ..remove(QuillToolbarOption.fontSize);
+final zdsQuillToolbarOptions = QuillToolbarOption.values.toSet();
 
 /// Represents a Quill editor page.
 class ZdsQuillEditorPage extends StatefulWidget {
@@ -336,11 +334,12 @@ class _ZdsQuillEditorState extends State<ZdsQuillEditorPage> with FrameCallbackM
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (showClearPill) const ZdsTag(child: Text('Clear Formatting')),
+          if (showClearPill)
+            ZdsTag(child: Text(ComponentStrings.of(context).get('CLEAR_FORMATTING', 'Clear Formatting'))),
           const SizedBox(width: 4),
           FloatingActionButton(
             mini: true,
-            tooltip: 'Clear Formatting',
+            tooltip: ComponentStrings.of(context).get('CLEAR_FORMATTING', 'Clear Formatting'),
             onPressed: null,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(30),
@@ -384,8 +383,6 @@ class _ZdsQuillEditorState extends State<ZdsQuillEditorPage> with FrameCallbackM
       toolbarOptions: <QuillToolbarOption>{...widget.toolbarOptions}
         ..remove(QuillToolbarOption.redo)
         ..remove(QuillToolbarOption.undo)
-        ..remove(QuillToolbarOption.fontFamily)
-        ..remove(QuillToolbarOption.fontSize)
         ..remove(QuillToolbarOption.clearFormat),
     );
   }

@@ -39,7 +39,7 @@ class ZdsChatTextMessage extends StatelessWidget {
     final List<String> urls = content.urls;
     final textStyle = EmojiUtil.hasOnlyEmojis(content.trim())
         ? Theme.of(context).textTheme.displayLarge
-        : Theme.of(context).textTheme.bodyLarge;
+        : Theme.of(context).textTheme.bodyMedium;
 
     final zetaColors = Zeta.of(context).colors;
     final wordsMapping = Map<String, HighlightedWord>.fromEntries(
