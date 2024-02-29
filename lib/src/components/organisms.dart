@@ -9,6 +9,7 @@ export 'organisms/chat/chat.dart';
 export 'organisms/date_range.dart';
 export 'organisms/date_range_picker_tile.dart';
 export 'organisms/day_picker.dart';
+export 'organisms/dial_pad.dart';
 export 'organisms/file_picker/file_picker.dart';
 export 'organisms/file_preview.dart';
 export 'organisms/fiscal_date_picker.dart';

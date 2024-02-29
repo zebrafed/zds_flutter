@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'pages/components/audio_recorder.dart';
 
 import 'home.dart';
 import 'pages/assets/animations.dart';
@@ -7,6 +6,7 @@ import 'pages/assets/icons.dart';
 import 'pages/assets/images.dart';
 import 'pages/components/app_bar.dart';
 import 'pages/components/audio_player.dart';
+import 'pages/components/audio_recorder.dart';
 import 'pages/components/big_toggle_button.dart';
 import 'pages/components/block_table.dart';
 import 'pages/components/bottom_bar.dart';
@@ -23,6 +23,7 @@ import 'pages/components/conditional_wrapper.dart';
 import 'pages/components/date_picker.dart';
 import 'pages/components/day_picker_demo.dart';
 import 'pages/components/default_flutter.dart';
+import 'pages/components/dial_pad.dart';
 import 'pages/components/empty_list_view.dart';
 import 'pages/components/empty_view.dart';
 import 'pages/components/expandable.dart';
@@ -122,6 +123,7 @@ final kRoutes = {
     const DemoRoute(title: 'Toast', wrapper: false, child: ToastDemo()),
     const DemoRoute(title: 'Toolbar', wrapper: false, child: ToolBarDemo()),
     const DemoRoute(title: 'Vertical Navigation', child: VerticalNavDemo()),
+    const DemoRoute(title: 'Dial Pad', child: DialPadExample()),
   ],
   'Assets': [
     const DemoRoute(title: 'Animations', child: AnimationsDemo()),

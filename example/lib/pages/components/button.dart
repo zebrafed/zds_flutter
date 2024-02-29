@@ -116,28 +116,28 @@ class _ButtonDemoState extends State<ButtonDemo> {
                 child: const Text('Muted'),
               ),
               const SizedBox(height: 10),
-              CircleIconButton(
+              ZdsRoundButton(
                 icon: ZetaIcons.end_call_round,
                 label: "Reject",
-                type: CircleButtonType.negative,
+                type: ZdsRoundButtonType.negative,
                 onTap: () {
                   print("Tap");
                 },
               ),
               const SizedBox(height: 10),
-              CircleIconButton(
+              ZdsRoundButton(
                 icon: ZetaIcons.phone_round,
                 label: "Accept",
-                type: CircleButtonType.positive,
+                type: ZdsRoundButtonType.positive,
                 onTap: () {
                   print("Tap");
                 },
               ),
               const SizedBox(height: 10),
-              CircleIconButton(
+              ZdsRoundButton(
                 icon: ZetaIcons.microphone_round,
                 label: "Mute",
-                type: CircleButtonType.base,
+                type: ZdsRoundButtonType.base,
                 activeIcon: ZetaIcons.microphone_off_round,
                 activeLabel: "Un-Mute",
                 onTap: () {
@@ -145,10 +145,10 @@ class _ButtonDemoState extends State<ButtonDemo> {
                 },
               ),
               const SizedBox(height: 10),
-              CircleIconButton(
+              ZdsRoundButton(
                 icon: ZetaIcons.alert_round,
                 label: "Security",
-                type: CircleButtonType.alert,
+                type: ZdsRoundButtonType.alert,
                 onTap: () {
                   print("Tap");
                 },
