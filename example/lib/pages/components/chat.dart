@@ -55,8 +55,8 @@ class _ChatDemoState extends State<ChatDemo> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final i1 = await rootBundle.loadString('assets/b64Image');
-      final i2 = await rootBundle.loadString('assets/b64Image2');
+      final i1 = await rootBundle.loadString('assets/b64Image.txt');
+      final i2 = await rootBundle.loadString('assets/b64Image2.txt');
       setState(() {
         img1 = i1;
         img2 = i2;
