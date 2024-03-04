@@ -49,7 +49,6 @@ class _ChatDemoState extends State<ChatDemo> {
   }
 
   bool loading = true;
-  late String img2;
   late String img1;
   List? children;
   Map childWidgets = {};
@@ -59,11 +58,9 @@ class _ChatDemoState extends State<ChatDemo> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final i1 = await rootBundle.loadString('assets/b64Image.txt');
-      final i2 = await rootBundle.loadString('assets/b64Image2.txt');
+      final i1 = await rootBundle.loadString('assets/b64Image');
       setState(() {
         img1 = i1;
-        img2 = i2;
         loading = false;
       });
     });
@@ -198,14 +195,6 @@ class _ChatDemoState extends State<ChatDemo> {
           status: ZdsChatMessageStatus.read,
         ),
         isLocalUser: false,
-      ),
-      _ChatExampleObj(
-        message: ZdsMessage.imageBase64(
-          time: DateTime.now(),
-          imageName: 'Cat',
-          image: img2,
-          status: ZdsChatMessageStatus.read,
-        ),
       ),
       _ChatExampleObj(
         message: ZdsMessage.imageBase64(
