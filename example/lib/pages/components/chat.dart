@@ -51,6 +51,10 @@ class _ChatDemoState extends State<ChatDemo> {
   bool loading = true;
   late String img2;
   late String img1;
+  List? children;
+  Map childWidgets = {};
+  final ItemScrollController controller = ItemScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -68,7 +72,7 @@ class _ChatDemoState extends State<ChatDemo> {
   @override
   Widget build(BuildContext context) {
     if (loading) return Center(child: CircularProgressIndicator());
-    final List<_ChatExampleObj> children = [
+    children ??= [
       _ChatExampleObj(
         isLocalUser: false,
         shouldShake: true,
@@ -213,24 +217,64 @@ class _ChatDemoState extends State<ChatDemo> {
       )
     ];
 
-    return ScrollablePositionedList.builder(
-      initialScrollIndex: children.length,
-      itemBuilder: (context, index) => ZdsChatMessage(
-        message: children[index].message,
-        highlight: children[index].highlight,
-        isLocalUser: children[index].isLocalUser,
-        onLinkTapped: (link) => launchUrl(Uri.parse(link)),
-        showFilePreview: children[index].showFilePreview,
-        shouldShake: children[index].shouldShake,
-        onFileDownload: () => showToast(context, 'Download'),
-        onLongPress: () => showToast(context, 'Long press'),
-        // searchTerm: ,TODO:
-        // onLongPress: ,TODO:
-        // onReactTapped: ,TODO:
-        // onReplyTap: ,TODO:
-        // onTagTapped: ,TODO:
+    return Scaffold(
+      bottomNavigationBar: ZdsMessageInput(
+          placeholder: 'Type a message...',
+          allowVoiceNotes: true,
+          voiceNoteFileName: 'temp',
+          onUploadFiles: (_) {
+            ScaffoldMessenger.of(context).showZdsToast(
+              ZdsToast(
+                title: Text('Files uploaded'),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    },
+                    icon: const Icon(ZdsIcons.close),
+                  ),
+                ],
+                color: ZdsToastColors.success,
+              ),
+            );
+          },
+          allowAttachments: true,
+          onSubmit: (value) {
+            setState(
+              () => children?.add(_ChatExampleObj(
+                message: ZdsMessage.text(
+                  status: ZdsChatMessageStatus.sent,
+                  time: DateTime.now(),
+                  content: value,
+                ),
+              )),
+            );
+            Future.delayed(Duration.zero).then((value) {
+              controller.scrollTo(index: children!.length + 2, duration: Durations.extralong4);
+            });
+          }),
+      body: ScrollablePositionedList.builder(
+        itemScrollController: controller,
+        initialScrollIndex: children!.length,
+        physics: ClampingScrollPhysics(),
+        itemBuilder: (context, index) {
+          childWidgets[index] ??= ZdsChatMessage(
+            message: children?[index].message,
+            highlight: children?[index].highlight,
+            isLocalUser: children?[index].isLocalUser,
+            onLinkTapped: (link) => launchUrl(Uri.parse(link)),
+            showFilePreview: children?[index].showFilePreview,
+            shouldShake: children?[index].shouldShake,
+            onFileDownload: () => showToast(context, 'Download'),
+            onLongPress: () => showToast(context, 'Long press'),
+            onReactTapped: () => showToast(context, 'Reacts tapped'),
+            onReplyTap: (_) => showToast(context, 'Reply tapped'),
+            onTagTapped: () => showToast(context, 'Tag tapped'),
+          );
+          return childWidgets[index];
+        },
+        itemCount: children!.length,
       ),
-      itemCount: children.length,
     );
   }
 }
