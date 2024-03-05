@@ -49,7 +49,7 @@ class _ChatDemoState extends State<ChatDemo> {
   }
 
   bool loading = true;
-  late String img1;
+  String? img;
   List? children;
   Map childWidgets = {};
   final ItemScrollController controller = ItemScrollController();
@@ -58,11 +58,16 @@ class _ChatDemoState extends State<ChatDemo> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final i1 = await rootBundle.loadString('assets/b64Image');
-      setState(() {
-        img1 = i1;
-        loading = false;
-      });
+      try {
+        final _img = await rootBundle.loadString('assets/b64Image');
+        setState(() {
+          img = _img;
+          loading = false;
+        });
+      } catch (e) {
+        print(e);
+        setState(() => loading = false);
+      }
     });
   }
 
@@ -200,7 +205,7 @@ class _ChatDemoState extends State<ChatDemo> {
         message: ZdsMessage.imageBase64(
           time: DateTime.now(),
           imageName: 'Cat1',
-          image: img1,
+          image: img ?? '',
           status: ZdsChatMessageStatus.read,
         ),
       )
