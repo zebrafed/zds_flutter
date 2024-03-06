@@ -57,7 +57,7 @@ extension on ZdsRoundButtonType {
       case ZdsRoundButtonType.negative:
         return colors.negative;
       case ZdsRoundButtonType.alert:
-        return colors.white;
+        return colors.surfacePrimary;
       case ZdsRoundButtonType.base:
         return colors.cool.shade20;
       case ZdsRoundButtonType.toggled:

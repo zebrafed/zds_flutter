@@ -99,7 +99,7 @@ const Map<String, String> _defaultButtonValues = {
   '#': '',
 };
 
-class _ZdsDialPadState extends State<ZdsDialPad> {
+class _ZdsDialPadState extends State<ZdsDialPad> with AutomaticKeepAliveClientMixin {
   late String _number;
   late String _text;
   String? _lastTapped;
@@ -227,6 +227,9 @@ class _ZdsDialPadState extends State<ZdsDialPad> {
     super.debugFillProperties(properties);
     properties.add(StringProperty('number', _number));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 extension on String? {
