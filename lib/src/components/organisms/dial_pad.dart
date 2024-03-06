@@ -161,64 +161,67 @@ class _ZdsDialPadState extends State<ZdsDialPad> with AutomaticKeepAliveClientMi
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final colors = Zeta.of(context).colors;
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 384),
-      child: Column(
-        children: [
-          const SizedBox(height: ZetaSpacing.x4),
-          Text(
-            widget.subtitle ?? '',
-            style: ZetaTextStyles.bodySmall.apply(color: widget.subtitleColor ?? colors.primary),
-          ),
-          const SizedBox(height: ZetaSpacing.xs),
-          Text(widget.showText ? _text : _number, style: ZetaTextStyles.heading1),
-          const SizedBox(height: ZetaSpacing.m),
-          ZetaDialPad(
-            onNumber: onNumberTap,
-            buttonValues: widget.buttonValues,
-            onText: widget.onTextTapped,
-          ),
-          const SizedBox(height: ZetaSpacing.m),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              (widget.leftButton != null
-                      ? widget.leftButton is ZdsRoundButton
-                          ? ZdsRoundButton(
-                              type: (widget.leftButton! as ZdsRoundButton).type,
-                              icon: (widget.leftButton! as ZdsRoundButton).icon,
-                              activeIcon: (widget.leftButton! as ZdsRoundButton).activeIcon,
-                              activeLabel: (widget.leftButton! as ZdsRoundButton).activeLabel,
-                              label: (widget.leftButton! as ZdsRoundButton).label,
-                              onTap: (widget.leftButton! as ZdsRoundButton).onTap,
-                              size: ZdsRoundButtonSize.medium,
-                            )
-                          : SizedBox.square(dimension: 60, child: widget.leftButton)
-                      : ZdsRoundButton(
-                          type: ZdsRoundButtonType.alert,
-                          icon: Icons.notifications_active_rounded,
-                          label: ComponentStrings.of(context).get('SECURITY', 'Security'),
-                          size: ZdsRoundButtonSize.medium,
-                          onTap: () => widget.onSecurityTapped?.call(_number),
-                        ))
-                  .paddingTop(ZetaSpacing.x4),
-              ZdsRoundButton(
-                type: ZdsRoundButtonType.positive,
-                icon: ZetaIcons.phone_round,
-                onTap: () => widget.onCallTapped?.call(_number),
-                size: ZdsRoundButtonSize.xlarge,
-              ),
-              IconButton(
-                onPressed: backSpace,
-                icon: const Icon(ZetaIcons.backspace_round),
-                color: Zeta.of(context).colors.iconDisabled,
-              ),
-            ],
-          ).paddingHorizontal(ZetaSpacing.l),
-        ],
-      ).paddingHorizontal(ZetaSpacing.x3),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: ZetaSpacing.x4),
+            Text(
+              widget.subtitle ?? '',
+              style: ZetaTextStyles.bodySmall.apply(color: widget.subtitleColor ?? colors.primary),
+            ),
+            const SizedBox(height: ZetaSpacing.xs),
+            Text(widget.showText ? _text : _number, style: ZetaTextStyles.heading1),
+            const SizedBox(height: ZetaSpacing.m),
+            ZetaDialPad(
+              onNumber: onNumberTap,
+              buttonValues: widget.buttonValues,
+              onText: widget.onTextTapped,
+            ),
+            const SizedBox(height: ZetaSpacing.m),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                (widget.leftButton != null
+                        ? widget.leftButton is ZdsRoundButton
+                            ? ZdsRoundButton(
+                                type: (widget.leftButton! as ZdsRoundButton).type,
+                                icon: (widget.leftButton! as ZdsRoundButton).icon,
+                                activeIcon: (widget.leftButton! as ZdsRoundButton).activeIcon,
+                                activeLabel: (widget.leftButton! as ZdsRoundButton).activeLabel,
+                                label: (widget.leftButton! as ZdsRoundButton).label,
+                                onTap: (widget.leftButton! as ZdsRoundButton).onTap,
+                                size: ZdsRoundButtonSize.medium,
+                              )
+                            : SizedBox.square(dimension: 60, child: widget.leftButton)
+                        : ZdsRoundButton(
+                            type: ZdsRoundButtonType.alert,
+                            icon: Icons.notifications_active_rounded,
+                            label: ComponentStrings.of(context).get('SECURITY', 'Security'),
+                            size: ZdsRoundButtonSize.medium,
+                            onTap: () => widget.onSecurityTapped?.call(_number),
+                          ))
+                    .paddingTop(ZetaSpacing.x4),
+                ZdsRoundButton(
+                  type: ZdsRoundButtonType.positive,
+                  icon: ZetaIcons.phone_round,
+                  onTap: () => widget.onCallTapped?.call(_number),
+                  size: ZdsRoundButtonSize.xlarge,
+                ),
+                IconButton(
+                  onPressed: backSpace,
+                  icon: const Icon(ZetaIcons.backspace_round),
+                  color: Zeta.of(context).colors.iconDisabled,
+                ),
+              ],
+            ).paddingHorizontal(ZetaSpacing.l),
+          ],
+        ).paddingHorizontal(ZetaSpacing.x3),
+      ),
     );
   }
 
